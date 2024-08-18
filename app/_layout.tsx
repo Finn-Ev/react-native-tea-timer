@@ -12,6 +12,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { StatusBar } from 'expo-status-bar';
+import { useThemeColor } from '../hooks/useThemeColor';
+import { Colors } from '../constants/Colors';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -21,6 +23,8 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  const tintColor = useThemeColor('tint');
 
   useEffect(() => {
     if (loaded) {
@@ -39,10 +43,10 @@ export default function RootLayout() {
           name="timers"
           options={{
             title: 'Timers',
-            headerShown: true,
-            headerRight: () => (
+            headerTintColor: tintColor,
+            headerRight: ({ tintColor }) => (
               <Link href="/settings">
-                <Ionicons name="settings-outline" size={24} />
+                <Ionicons name="settings-outline" color={tintColor} size={24} />
               </Link>
             ),
           }}
@@ -51,7 +55,7 @@ export default function RootLayout() {
           name="settings"
           options={{
             title: 'Settings',
-            headerShown: true,
+            headerTintColor: tintColor,
           }}
         />
         <Stack.Screen name="+not-found" />
