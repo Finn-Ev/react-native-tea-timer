@@ -20,5 +20,6 @@ export function useCustomThemeColor(colorValues: {
   dark?: string;
 }) {
   const theme = useColorScheme() ?? 'light';
+
   return colorValues[theme];
 }

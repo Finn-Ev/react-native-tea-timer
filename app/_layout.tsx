@@ -14,6 +14,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { StatusBar } from 'expo-status-bar';
 import { useThemeColor } from '../hooks/useThemeColor';
 import { Colors } from '../constants/Colors';
+import { ContextProviders } from '../context';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -38,28 +39,35 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName="timers">
-        <Stack.Screen
-          name="timers"
-          options={{
-            title: 'Timers',
-            headerTintColor: tintColor,
-            headerRight: ({ tintColor }) => (
-              <Link href="/settings">
-                <Ionicons name="settings-outline" color={tintColor} size={24} />
-              </Link>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="settings"
-          options={{
-            title: 'Settings',
-            headerTintColor: tintColor,
-          }}
-        />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      {/* <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} /> */}
+      <ContextProviders>
+        <Stack initialRouteName="timers">
+          <Stack.Screen
+            name="timers"
+            options={{
+              title: 'Timers',
+              headerTintColor: tintColor,
+              headerRight: ({ tintColor }) => (
+                <Link href="/settings">
+                  <Ionicons
+                    name="settings-outline"
+                    color={tintColor}
+                    size={24}
+                  />
+                </Link>
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="settings"
+            options={{
+              title: 'Settings',
+              headerTintColor: tintColor,
+            }}
+          />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </ContextProviders>
     </ThemeProvider>
   );
 }
