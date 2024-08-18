@@ -16,7 +16,6 @@ import { useThemeColor } from '../hooks/useThemeColor';
 
 export default function SettingsScreen() {
   const handleTimerSelection = async (sound: TimerSound) => {
-    setSelectedTimerSound(sound);
     // play the sound when the sound gets newly selected
     if (settings.selectedTimerSound?.id !== sound.id) {
       // Play the selected sound
@@ -27,6 +26,8 @@ export default function SettingsScreen() {
       //   console.log('Playing Sound');
       //   await loadedSound.playAsync();
     }
+
+    setSelectedTimerSound(sound);
   };
 
   const {
