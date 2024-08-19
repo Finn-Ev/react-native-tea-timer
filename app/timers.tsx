@@ -4,6 +4,7 @@ import { ThemedView } from '@/components/ThemedView';
 import FloatingActionButton from '../components/FloatingActionButton';
 import { ThemedText } from '../components/ThemedText';
 import { useSettings } from '../context/settingsContext';
+import { router } from 'expo-router';
 
 export default function TimersScreen() {
   const { settings } = useSettings();
@@ -17,7 +18,11 @@ export default function TimersScreen() {
           <ThemedText>Test</ThemedText>
         </View>
       </ScrollView>
-      <FloatingActionButton onPress={() => {}} />
+      <FloatingActionButton
+        onPress={() => {
+          router.push('/create-timer');
+        }}
+      />
     </ThemedView>
   );
 }

@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Switch,
-  TouchableOpacity,
-  Pressable,
-} from 'react-native';
+import { StyleSheet, ScrollView, View, Switch, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';

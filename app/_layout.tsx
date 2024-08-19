@@ -1,20 +1,19 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Link, Stack } from 'expo-router';
+import { Link, router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { StatusBar } from 'expo-status-bar';
-import { useThemeColor } from '../hooks/useThemeColor';
-import { Colors } from '../constants/Colors';
+import { Pressable } from 'react-native';
 import { ContextProviders } from '../context';
+import { useThemeColor } from '../hooks/useThemeColor';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -65,6 +64,20 @@ export default function RootLayout() {
               headerTintColor: tintColor,
             }}
           />
+          <Stack.Screen
+            name="create-timer"
+            options={{
+              presentation: 'fullScreenModal',
+              title: 'Create timer',
+              headerTintColor: tintColor,
+              headerLeft: ({ tintColor }) => (
+                <Pressable onPress={() => router.back()}>
+                  <Ionicons name="close" color={tintColor} size={28} />
+                </Pressable>
+              ),
+            }}
+          />
+
           <Stack.Screen name="+not-found" />
         </Stack>
       </ContextProviders>
