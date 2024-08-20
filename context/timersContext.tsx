@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+
+export const defaultCategoryId = '__default__';
 
 // Define types for Timer and TimerCategory
 export type TimerCategory = {
@@ -11,14 +13,14 @@ export type TimerCategory = {
 export type Timer = {
   id: string;
   title: string;
-  infusionDurations: number[];
+  infusions: number[];
 };
 
 // Create the context with an empty default value
 export const TimersContext = createContext<
   | {
       timerCategories: TimerCategory[];
-      addTimerCategory: (category: TimerCategory) => void;
+      createTimerCategory: (title: string) => TimerCategory;
       updateTimerCategory: (
         id: string,
         updatedCategory: Partial<TimerCategory>
@@ -43,8 +45,25 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Load categories from localStorage when the component mounts
   useEffect(() => {
+    const defaultCategory: TimerCategory = {
+      id: defaultCategoryId,
+      title: 'Other Timers',
+      timers: [],
+    };
+
     AsyncStorage.getItem('timerCategories').then(savedCategories => {
-      setTimerCategories(savedCategories ? JSON.parse(savedCategories) : []);
+      if (!savedCategories) {
+        // uses the app for the first time so we need to create the default category
+        setTimerCategories([defaultCategory]);
+        return;
+      }
+
+      const parsedCategories: TimerCategory[] = JSON.parse(savedCategories);
+
+      if (parsedCategories.length) {
+        setTimerCategories(parsedCategories);
+        return;
+      }
     });
   }, []);
 
@@ -54,8 +73,15 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [timerCategories]);
 
   // Add a new timer category
-  const addTimerCategory = (category: TimerCategory) => {
-    setTimerCategories([...timerCategories, category]);
+  const createTimerCategory = (title: string) => {
+    const newCategory: TimerCategory = {
+      id: Math.random().toString(36).substring(7),
+      title,
+      timers: [],
+    };
+
+    setTimerCategories([...timerCategories, newCategory]);
+    return newCategory;
   };
 
   // Update an existing timer category by id
@@ -124,7 +150,7 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
     <TimersContext.Provider
       value={{
         timerCategories,
-        addTimerCategory,
+        createTimerCategory,
         updateTimerCategory,
         deleteTimerCategory,
         addTimer,
@@ -137,4 +163,10 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useTimers = () => useContext(TimersContext);
+export const useTimers = () => {
+  const context = useContext(TimersContext);
+  if (!context) {
+    throw new Error('useTimers must be used within a TimersProvider');
+  }
+  return context;
+};

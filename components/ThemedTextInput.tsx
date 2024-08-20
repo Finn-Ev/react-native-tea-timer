@@ -10,7 +10,7 @@ interface ThemedTextInputProps extends TextInputProps {
 const ThemedTextInput = forwardRef<TextInput, ThemedTextInputProps>(
   function ThemedTextInput({ label, style, ...props }, ref) {
     const accent = useThemeColor('accent');
-    const textColor = useThemeColor('text');
+    const textColor = useThemeColor('secondary');
 
     return (
       <>

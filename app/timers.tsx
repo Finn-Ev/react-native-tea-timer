@@ -1,13 +1,15 @@
-import { Image, StyleSheet, ScrollView, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedView } from '@/components/ThemedView';
+import { router } from 'expo-router';
 import FloatingActionButton from '../components/FloatingActionButton';
 import { ThemedText } from '../components/ThemedText';
 import { useSettings } from '../context/settingsContext';
-import { router } from 'expo-router';
+import { defaultCategoryId, useTimers } from '../context/timersContext';
 
 export default function TimersScreen() {
   const { settings } = useSettings();
+  const { timerCategories } = useTimers();
   return (
     <ThemedView style={styles.pageContainer}>
       <ScrollView>
@@ -15,12 +17,22 @@ export default function TimersScreen() {
           <Image source={require('@/assets/images/green-tea.jpg')} />
         )}
         <View style={styles.mainContent}>
-          <ThemedText>Test</ThemedText>
+          {timerCategories.map(category => (
+            <Pressable
+              onPress={() => router.push(`/category/${category.id}`)}
+              key={category.id}
+            >
+              <ThemedText type="title">{category.title}</ThemedText>
+              <ThemedText type="subtitle">
+                {category.timers.length} timers
+              </ThemedText>
+            </Pressable>
+          ))}
         </View>
       </ScrollView>
       <FloatingActionButton
         onPress={() => {
-          router.push('/create-timer');
+          router.push(`/create-timer/${defaultCategoryId}`);
         }}
       />
     </ThemedView>

@@ -18,18 +18,18 @@ export default function ThemedButton({
   children,
   ...props
 }: ThemedButtonProps) {
-  const primaryColor = useThemeColor('primary');
-  const secondaryColor = useThemeColor('secondary');
+  const textColor = useThemeColor('primary');
+  const backgroundColor = useThemeColor('secondary');
   return (
     <Pressable
       style={[
         styles.button,
         style as StyleProp<ViewStyle>,
-        { backgroundColor: primaryColor },
+        { backgroundColor: backgroundColor },
       ]}
       {...props}
     >
-      <Text style={[styles.text, { color: secondaryColor }]}>{title}</Text>
+      <Text style={[styles.text, { color: textColor }]}>{title}</Text>
     </Pressable>
   );
 }

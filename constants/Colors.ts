@@ -1,25 +1,16 @@
-const tintColorLight = '#000';
-const tintColorDark = '#fff';
-
 export const Colors = {
   light: {
-    text: '#11181C',
-    primary: '#11181C',
-    secondary: '#fff',
+    primary: '#fff',
+    secondary: '#11181C',
+    content: '#F8F8F8',
     accent: '#BBB',
-    background: '#fff',
-    card: '#F8F8F8',
-    tint: tintColorLight,
-    icon: '#687076',
+    icon: '#454545',
   },
   dark: {
-    text: '#ECEDEE',
-    primary: '#ECEDEE',
-    secondary: '#000',
+    primary: '#000',
+    secondary: '#ECEDEE',
+    content: '#1A1A1A',
     accent: '#666',
-    background: '#000',
-    card: '#1A1A1A',
-    tint: tintColorDark,
     icon: '#9BA1A6',
   },
 };

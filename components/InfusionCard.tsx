@@ -19,7 +19,7 @@ export default function InfusionCard({
   onDurationChange,
   deleteInfusion,
 }: InfusionCardProps) {
-  const cardBackgroundColor = useThemeColor('card');
+  const cardBackgroundColor = useThemeColor('content');
   const accent = useThemeColor('accent');
 
   const durationInputRef = useRef<RNTextInput>(null);
@@ -55,12 +55,16 @@ export default function InfusionCard({
         <ThemedText>Seconds</ThemedText>
       </View>
 
-      <ThemedIcon
-        name="trash"
-        size={24}
-        onPress={() => deleteInfusion(index)}
-        style={styles.deleteButton}
-      />
+      {index !== 0 ? (
+        <ThemedIcon
+          name="trash"
+          size={24}
+          onPress={() => deleteInfusion(index)}
+          style={styles.deleteButton}
+        />
+      ) : (
+        <View style={{ width: 42, padding: 12 }} />
+      )}
     </ThemedView>
   );
 }

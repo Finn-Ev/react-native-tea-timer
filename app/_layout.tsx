@@ -24,7 +24,7 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  const tintColor = useThemeColor('tint');
+  const tintColor = useThemeColor('secondary');
 
   useEffect(() => {
     if (loaded) {
@@ -38,7 +38,6 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {/* <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} /> */}
       <ContextProviders>
         <Stack initialRouteName="timers">
           <Stack.Screen
@@ -65,7 +64,7 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name="create-timer"
+            name="create-timer/[categoryId]"
             options={{
               presentation: 'fullScreenModal',
               title: 'Create timer',
@@ -75,6 +74,12 @@ export default function RootLayout() {
                   <Ionicons name="close" color={tintColor} size={28} />
                 </Pressable>
               ),
+            }}
+          />
+          <Stack.Screen
+            name="category/[categoryId]"
+            options={{
+              headerTintColor: tintColor,
             }}
           />
 

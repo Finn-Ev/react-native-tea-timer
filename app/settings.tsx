@@ -1,9 +1,8 @@
-import { StyleSheet, ScrollView, View, Switch, Pressable } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { TimerSound, useSettings } from '@/context/settingsContext';
-import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from '../hooks/useThemeColor';
 
@@ -31,7 +30,7 @@ export default function SettingsScreen() {
   } = useSettings();
 
   const accentColor = useThemeColor('accent');
-  const textColor = useThemeColor('text');
+  const textColor = useThemeColor('secondary');
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
