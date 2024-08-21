@@ -13,6 +13,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Pressable } from 'react-native';
 import { ContextProviders } from '../context';
+import { defaultCategoryId } from '../context/timersContext';
 import { useThemeColor } from '../hooks/useThemeColor';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -45,13 +46,18 @@ export default function RootLayout() {
             options={{
               title: 'Timers',
               headerTintColor: tintColor,
-              headerRight: ({ tintColor }) => (
+              headerLeft: ({ tintColor }) => (
                 <Link href="/settings">
                   <Ionicons
                     name="settings-outline"
                     color={tintColor}
                     size={24}
                   />
+                </Link>
+              ),
+              headerRight: ({ tintColor }) => (
+                <Link href={`/create-timer/${defaultCategoryId}`}>
+                  <Ionicons name="add-outline" color={tintColor} size={28} />
                 </Link>
               ),
             }}
