@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
-import { defaultCategoryId, useTimers } from '../context/timersContext';
+import { useTimers } from '../context/timersContext';
 import { useThemeColor } from '../hooks/useThemeColor';
 import { ThemedText } from './theme/ThemedText';
 
@@ -13,8 +13,7 @@ export default function SelectCategory({
   selectedCategoryId,
   handleCategorySelection,
 }: SelectCategoryProps) {
-  const { customTimerCategories: timerCategories, createTimerCategory } =
-    useTimers();
+  const { customTimerCategories, createTimerCategory } = useTimers();
 
   const accentColor = useThemeColor('accent');
   const textColor = useThemeColor('secondary');
@@ -33,24 +32,22 @@ export default function SelectCategory({
         backgroundColor: backgroundColor,
       }}
     >
-      {timerCategories
-        .filter(category => category.id !== defaultCategoryId)
-        .map((category, idx) => (
-          <Pressable
-            onPress={() => handleCategorySelection(category.id)}
-            key={category.id}
-            style={{
-              ...styles.category,
-              borderColor: accentColor,
-              ...(idx === 0 && { borderTopWidth: 0 }),
-            }}
-          >
-            <ThemedText>{category.title}</ThemedText>
-            {selectedCategoryId === category.id && (
-              <Ionicons name="checkmark" size={24} color={textColor} />
-            )}
-          </Pressable>
-        ))}
+      {customTimerCategories.map((category, idx) => (
+        <Pressable
+          onPress={() => handleCategorySelection(category.id)}
+          key={category.id}
+          style={{
+            ...styles.category,
+            borderColor: accentColor,
+            ...(idx === 0 && { borderTopWidth: 0 }),
+          }}
+        >
+          <ThemedText>{category.title}</ThemedText>
+          {selectedCategoryId === category.id && (
+            <Ionicons name="checkmark" size={24} color={textColor} />
+          )}
+        </Pressable>
+      ))}
 
       <Pressable
         onPress={() => {
@@ -63,7 +60,7 @@ export default function SelectCategory({
         style={[
           styles.createCategory,
           { borderColor: accentColor },
-          timerCategories.length === 0 && { borderTopWidth: 0 },
+          customTimerCategories.length === 0 && { borderTopWidth: 0 },
         ]}
       >
         <Ionicons name="add-circle" size={24} color={textColor} />
@@ -76,22 +73,23 @@ export default function SelectCategory({
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-
-    padding: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
     borderRadius: 12,
   },
   category: {
     display: 'flex',
+    paddingHorizontal: 6,
+    paddingVertical: 4,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 8,
     borderTopWidth: 1,
   },
   createCategory: {
     display: 'flex',
     flexDirection: 'row',
-    padding: 8,
+    padding: 6,
     borderTopWidth: 1,
-    gap: 4,
+    gap: 3,
   },
 });
