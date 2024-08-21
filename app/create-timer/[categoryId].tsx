@@ -14,9 +14,8 @@ export default function CreateTimerScreen() {
 
   const navigation = useNavigation();
   const router = useRouter();
-  const searchParams = useLocalSearchParams();
 
-  const preSelectedCategoryId = searchParams.categoryId;
+  const { categoryId: preSelectedCategoryId } = useLocalSearchParams();
 
   const [title, setTitle] = useState('');
   const [infusions, setInfusions] = useState<number[]>([0]);
@@ -54,6 +53,34 @@ export default function CreateTimerScreen() {
 
     addTimer(selectedCategoryId ?? defaultCategoryId, timer);
 
+    // user is creating a timer from the default category and doesn't select a custom category
+    if (
+      preSelectedCategoryId === defaultCategoryId &&
+      selectedCategoryId === null
+    ) {
+      router.back();
+      return;
+    }
+
+    if (preSelectedCategoryId === defaultCategoryId && selectedCategoryId) {
+      router.replace(`/category/${selectedCategoryId}`);
+      return;
+    }
+
+    // user is creating a timer from a custom category and doesn't change the initial category
+    if (preSelectedCategoryId === selectedCategoryId) {
+      router.back();
+      return;
+    }
+
+    // user is creating a timer from a custom category and changes the initial category to the default category
+    if (preSelectedCategoryId && selectedCategoryId === defaultCategoryId) {
+      router.replace(`/timers`);
+      return;
+    }
+
+    // user is creating a timer from a custom category and changes the initial category to another custom category OR
+    // user is creating a timer from the default category and selects a custom category
     router.replace(`/category/${selectedCategoryId}`);
   };
 
