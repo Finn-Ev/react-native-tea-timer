@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useTimers } from '../context/timersContext';
 import { useThemeColor } from '../hooks/useThemeColor';
-import { ThemedText } from './ThemedText';
+import { ThemedText } from './theme/ThemedText';
 
 interface SelectCategoryProps {
   selectedCategoryId: string | null;

@@ -1,12 +1,12 @@
+import ThemedIcon from '@/components/theme/ThemedIcon';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import SelectCategory from '../../components/CategoryList';
 import InfusionCard from '../../components/InfusionCard';
-import ThemedIcon from '../../components/ThemedIcon';
-import { ThemedText } from '../../components/ThemedText';
-import ThemedTextInput from '../../components/ThemedTextInput';
-import { ThemedView } from '../../components/ThemedView';
+import { ThemedText } from '../../components/theme/ThemedText';
+import ThemedTextInput from '../../components/theme/ThemedTextInput';
+import { ThemedView } from '../../components/theme/ThemedView';
 import { useTimers } from '../../context/timersContext';
 
 export default function CreateTimerScreen() {

@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useLayoutEffect } from 'react';
-import { ThemedView } from '../../components/ThemedView';
+import { ThemedView } from '../../components/theme/ThemedView';
 import { useTimers } from '../../context/timersContext';
 
 export default function CategoryDetailScreen() {

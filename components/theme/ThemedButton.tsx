@@ -6,7 +6,7 @@ import {
   Text,
   ViewStyle,
 } from 'react-native';
-import { useThemeColor } from '../hooks/useThemeColor';
+import { useThemeColor } from '../../hooks/useThemeColor';
 
 interface ThemedButtonProps extends PressableProps {
   title: string;

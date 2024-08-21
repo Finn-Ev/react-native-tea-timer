@@ -1,9 +1,9 @@
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedView } from '@/components/theme/ThemedView';
 import { router } from 'expo-router';
 import FloatingActionButton from '../components/FloatingActionButton';
-import { ThemedText } from '../components/ThemedText';
+import { ThemedText } from '../components/theme/ThemedText';
 import { useSettings } from '../context/settingsContext';
 import { defaultCategoryId, useTimers } from '../context/timersContext';
 

@@ -1,10 +1,10 @@
+import ThemedIcon from '@/components/theme/ThemedIcon';
 import { useRef } from 'react';
 import { TextInput as RNTextInput, StyleSheet, View } from 'react-native';
 import { useThemeColor } from '../hooks/useThemeColor';
-import ThemedIcon from './ThemedIcon';
-import { ThemedText } from './ThemedText';
-import ThemedTextInput from './ThemedTextInput';
-import { ThemedView } from './ThemedView';
+import { ThemedText } from './theme/ThemedText';
+import ThemedTextInput from './theme/ThemedTextInput';
+import { ThemedView } from './theme/ThemedView';
 
 interface InfusionCardProps {
   index: number;

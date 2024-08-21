@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/theme/ThemedText';
+import { ThemedView } from '@/components/theme/ThemedView';
 import { TimerSound, useSettings } from '@/context/settingsContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from '../hooks/useThemeColor';
@@ -31,6 +31,7 @@ export default function SettingsScreen() {
 
   const accentColor = useThemeColor('accent');
   const textColor = useThemeColor('secondary');
+  const backgroundColor = useThemeColor('content');
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -38,7 +39,13 @@ export default function SettingsScreen() {
         <ThemedText style={styles.sectionTitle} type="subtitle">
           General
         </ThemedText>
-        <View style={{ ...styles.basicOption, borderColor: accentColor }}>
+        <View
+          style={{
+            ...styles.basicOption,
+            borderColor: accentColor,
+            backgroundColor,
+          }}
+        >
           <ThemedText>Show Timers Hero Image</ThemedText>
           <Switch
             value={settings.showTimerHeroImage}
@@ -48,7 +55,13 @@ export default function SettingsScreen() {
         <ThemedText style={styles.sectionTitle} type="subtitle">
           Sound
         </ThemedText>
-        <View style={{ ...styles.basicOption, borderColor: accentColor }}>
+        <View
+          style={{
+            ...styles.basicOption,
+            borderColor: accentColor,
+            backgroundColor,
+          }}
+        >
           <ThemedText>Mute Timer Sounds?</ThemedText>
           <Switch
             value={settings.muteTimerSounds}
@@ -60,6 +73,7 @@ export default function SettingsScreen() {
             style={{
               ...styles.selectTimerSoundSection,
               borderColor: accentColor,
+              backgroundColor,
             }}
           >
             <ThemedText>Available Timer Sounds</ThemedText>

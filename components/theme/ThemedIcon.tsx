@@ -1,6 +1,6 @@
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { useThemeColor } from '../hooks/useThemeColor';
 
 type ThemedIconProps = React.ComponentProps<typeof Ionicons>;
 
