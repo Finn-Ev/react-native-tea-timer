@@ -2,12 +2,12 @@ import ThemedIcon from '@/components/theme/ThemedIcon';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import SelectCategory from '../../components/CategoryList';
+import CategoryList from '../../components/CategoryList';
 import InfusionCard from '../../components/InfusionCard';
 import { ThemedText } from '../../components/theme/ThemedText';
 import ThemedTextInput from '../../components/theme/ThemedTextInput';
 import { ThemedView } from '../../components/theme/ThemedView';
-import { useTimers } from '../../context/timersContext';
+import { defaultCategoryId, useTimers } from '../../context/timersContext';
 
 export default function CreateTimerScreen() {
   const { addTimer } = useTimers();
@@ -21,7 +21,13 @@ export default function CreateTimerScreen() {
   const [title, setTitle] = useState('');
   const [infusions, setInfusions] = useState<number[]>([0]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    preSelectedCategoryId as string
+    () => {
+      if (preSelectedCategoryId === defaultCategoryId) {
+        return null;
+      } else {
+        return preSelectedCategoryId as string;
+      }
+    }
   );
 
   useEffect(() => {
@@ -35,7 +41,7 @@ export default function CreateTimerScreen() {
   }, [navigation, title, selectedCategoryId, infusions]);
 
   const handleSave = () => {
-    if (!selectedCategoryId || !title || infusions.length === 0) {
+    if (!title || infusions.length === 0) {
       Alert.alert('Error', 'Please fill out all fields');
       return;
     }
@@ -45,7 +51,9 @@ export default function CreateTimerScreen() {
       infusions,
       id: Math.random().toString(36).substring(7),
     };
-    addTimer(selectedCategoryId, timer);
+
+    addTimer(selectedCategoryId ?? defaultCategoryId, timer);
+
     router.replace(`/category/${selectedCategoryId}`);
   };
 
@@ -78,7 +86,7 @@ export default function CreateTimerScreen() {
           />
           <View style={styles.categoryList}>
             <ThemedText>Category</ThemedText>
-            <SelectCategory
+            <CategoryList
               selectedCategoryId={selectedCategoryId}
               handleCategorySelection={setSelectedCategoryId}
             />

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
-import { useTimers } from '../context/timersContext';
+import { defaultCategoryId, useTimers } from '../context/timersContext';
 import { useThemeColor } from '../hooks/useThemeColor';
 import { ThemedText } from './theme/ThemedText';
 
@@ -13,7 +13,8 @@ export default function SelectCategory({
   selectedCategoryId,
   handleCategorySelection,
 }: SelectCategoryProps) {
-  const { timerCategories, createTimerCategory } = useTimers();
+  const { customTimerCategories: timerCategories, createTimerCategory } =
+    useTimers();
 
   const accentColor = useThemeColor('accent');
   const textColor = useThemeColor('secondary');
@@ -32,22 +33,24 @@ export default function SelectCategory({
         backgroundColor: backgroundColor,
       }}
     >
-      {timerCategories.map((category, idx) => (
-        <Pressable
-          onPress={() => handleCategorySelection(category.id)}
-          key={category.id}
-          style={{
-            ...styles.category,
-            borderColor: accentColor,
-            ...(idx === 0 && { borderTopWidth: 0 }),
-          }}
-        >
-          <ThemedText>{category.title}</ThemedText>
-          {selectedCategoryId === category.id && (
-            <Ionicons name="checkmark" size={24} color={textColor} />
-          )}
-        </Pressable>
-      ))}
+      {timerCategories
+        .filter(category => category.id !== defaultCategoryId)
+        .map((category, idx) => (
+          <Pressable
+            onPress={() => handleCategorySelection(category.id)}
+            key={category.id}
+            style={{
+              ...styles.category,
+              borderColor: accentColor,
+              ...(idx === 0 && { borderTopWidth: 0 }),
+            }}
+          >
+            <ThemedText>{category.title}</ThemedText>
+            {selectedCategoryId === category.id && (
+              <Ionicons name="checkmark" size={24} color={textColor} />
+            )}
+          </Pressable>
+        ))}
 
       <Pressable
         onPress={() => {
@@ -57,10 +60,11 @@ export default function SelectCategory({
             }
           });
         }}
-        style={{
-          ...styles.createCategory,
-          borderColor: accentColor,
-        }}
+        style={[
+          styles.createCategory,
+          { borderColor: accentColor },
+          timerCategories.length === 0 && { borderTopWidth: 0 },
+        ]}
       >
         <Ionicons name="add-circle" size={24} color={textColor} />
         <ThemedText>Create category</ThemedText>

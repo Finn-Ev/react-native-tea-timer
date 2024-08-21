@@ -4,7 +4,7 @@ import { ThemedView } from '../../components/theme/ThemedView';
 import { useTimers } from '../../context/timersContext';
 
 export default function CategoryDetailScreen() {
-  const { timerCategories } = useTimers();
+  const { customTimerCategories: timerCategories } = useTimers();
   const router = useRouter();
   const navigation = useNavigation();
 

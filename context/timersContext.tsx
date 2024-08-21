@@ -19,7 +19,8 @@ export type Timer = {
 // Create the context with an empty default value
 export const TimersContext = createContext<
   | {
-      timerCategories: TimerCategory[];
+      customTimerCategories: TimerCategory[];
+      defaultCategory: TimerCategory;
       createTimerCategory: (title: string) => TimerCategory;
       updateTimerCategory: (
         id: string,
@@ -41,28 +42,31 @@ export const TimersContext = createContext<
 export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [timerCategories, setTimerCategories] = useState<TimerCategory[]>([]);
+  const defaultCategory: TimerCategory = {
+    id: defaultCategoryId,
+    title: 'Other Timers',
+    timers: [],
+  };
+
+  const [timerCategories, setTimerCategories] = useState<TimerCategory[]>([
+    defaultCategory,
+  ]);
 
   // Load categories from localStorage when the component mounts
   useEffect(() => {
-    const defaultCategory: TimerCategory = {
-      id: defaultCategoryId,
-      title: 'Other Timers',
-      timers: [],
-    };
+    // AsyncStorage.clear();
 
     AsyncStorage.getItem('timerCategories').then(savedCategories => {
       if (!savedCategories) {
-        // uses the app for the first time so we need to create the default category
-        setTimerCategories([defaultCategory]);
-        return;
+        throw new Error('No saved categories. This should not be possible.');
       }
 
       const parsedCategories: TimerCategory[] = JSON.parse(savedCategories);
 
       if (parsedCategories.length) {
         setTimerCategories(parsedCategories);
-        return;
+      } else {
+        throw new Error('No saved categories. This should not be possible.');
       }
     });
   }, []);
@@ -149,7 +153,12 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <TimersContext.Provider
       value={{
-        timerCategories,
+        customTimerCategories: timerCategories.filter(
+          category => category.id !== defaultCategoryId
+        ),
+        defaultCategory: timerCategories.find(
+          category => category.id === defaultCategoryId
+        )!,
         createTimerCategory,
         updateTimerCategory,
         deleteTimerCategory,
