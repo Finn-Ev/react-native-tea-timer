@@ -1,10 +1,9 @@
 import TimerForm from '@/components/TimerForm';
 import { defaultCategoryId, useTimers } from '@/context/timersContext';
-import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 export default function CreateTimerScreen() {
   const { addTimer } = useTimers();
-  const navigation = useNavigation();
   const router = useRouter();
   const { categoryId: preSelectedCategoryId } = useLocalSearchParams();
 
@@ -34,7 +33,6 @@ export default function CreateTimerScreen() {
     <TimerForm
       initialCategoryId={preSelectedCategoryId as string}
       onSave={handleSave}
-      navigation={navigation}
     />
   );
 }

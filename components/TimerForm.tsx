@@ -5,7 +5,7 @@ import { ThemedText } from '@/components/theme/ThemedText';
 import ThemedTextInput from '@/components/theme/ThemedTextInput';
 import { ThemedView } from '@/components/theme/ThemedView';
 import { defaultCategoryId } from '@/context/timersContext';
-import { NavigationProp } from '@react-navigation/native';
+import { useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -14,7 +14,6 @@ type TimerFormProps = {
   initialInfusions?: number[];
   initialCategoryId: string;
   onSave: (title: string, infusions: number[], categoryId: string) => void;
-  navigation: NavigationProp<ReactNavigation.RootParamList>;
 };
 
 export default function TimerForm({
@@ -22,8 +21,9 @@ export default function TimerForm({
   initialInfusions = [0],
   initialCategoryId,
   onSave,
-  navigation,
 }: TimerFormProps) {
+  const navigation = useNavigation();
+
   const [title, setTitle] = useState(initialTitle);
   const [infusions, setInfusions] = useState<number[]>(initialInfusions);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
