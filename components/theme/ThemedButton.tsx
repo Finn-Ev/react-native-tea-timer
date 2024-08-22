@@ -1,14 +1,14 @@
 import {
-  Pressable,
-  PressableProps,
   StyleProp,
   StyleSheet,
   Text,
+  TouchableOpacity,
+  TouchableOpacityProps,
   ViewStyle,
 } from 'react-native';
 import { useThemeColor } from '../../hooks/useThemeColor';
 
-interface ThemedButtonProps extends PressableProps {
+interface ThemedButtonProps extends TouchableOpacityProps {
   title: string;
 }
 
@@ -21,7 +21,7 @@ export default function ThemedButton({
   const textColor = useThemeColor('primary');
   const backgroundColor = useThemeColor('secondary');
   return (
-    <Pressable
+    <TouchableOpacity
       style={[
         styles.button,
         style as StyleProp<ViewStyle>,
@@ -30,7 +30,7 @@ export default function ThemedButton({
       {...props}
     >
       <Text style={[styles.text, { color: textColor }]}>{title}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 }
 

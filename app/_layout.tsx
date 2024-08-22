@@ -83,6 +83,19 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="edit-timer/[timerId]"
+            options={{
+              presentation: 'fullScreenModal',
+              title: 'Edit Timer',
+              headerTintColor: tintColor,
+              headerLeft: ({ tintColor }) => (
+                <Pressable onPress={() => router.back()}>
+                  <Ionicons name="close" color={tintColor} size={28} />
+                </Pressable>
+              ),
+            }}
+          />
+          <Stack.Screen
             name="category/[categoryId]"
             options={{
               headerTintColor: tintColor,

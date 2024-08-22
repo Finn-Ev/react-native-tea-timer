@@ -1,12 +1,45 @@
-import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  View,
+} from 'react-native';
 
 import { ThemedText } from '@/components/theme/ThemedText';
 import { ThemedView } from '@/components/theme/ThemedView';
 import { TimerSound, useSettings } from '@/context/settingsContext';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import ThemedButton from '../components/theme/ThemedButton';
+import { useTimers } from '../context/timersContext';
 import { useThemeColor } from '../hooks/useThemeColor';
 
 export default function SettingsScreen() {
+  const router = useRouter();
+  const { clearAllTimerData } = useTimers();
+  const handleDeleteTimerData = () => {
+    Alert.alert(
+      'Delete All Timers',
+      'All categories and timers will be deleted. Are you sure?',
+      [
+        {
+          text: 'Yes',
+          style: 'destructive',
+          onPress: () => {
+            clearAllTimerData();
+            router.replace('/');
+          },
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ]
+    );
+  };
+
   const handleTimerSelection = async (sound: TimerSound) => {
     // play the sound when the sound gets newly selected
     if (settings.selectedTimerSound?.id !== sound.id) {
@@ -37,22 +70,6 @@ export default function SettingsScreen() {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <ThemedView style={styles.pageContainer}>
         <ThemedText style={styles.sectionTitle} type="subtitle">
-          General
-        </ThemedText>
-        <View
-          style={{
-            ...styles.basicOption,
-            borderColor: accentColor,
-            backgroundColor,
-          }}
-        >
-          <ThemedText>Show Timers Hero Image</ThemedText>
-          <Switch
-            value={settings.showTimerHeroImage}
-            onValueChange={setShowTimerHeroImage}
-          />
-        </View>
-        <ThemedText style={styles.sectionTitle} type="subtitle">
           Sound
         </ThemedText>
         <View
@@ -76,7 +93,7 @@ export default function SettingsScreen() {
               backgroundColor,
             }}
           >
-            <ThemedText>Available Timer Sounds</ThemedText>
+            <ThemedText>Timer Sound</ThemedText>
             {settings.availableTimerSounds.map((sound, idx) => (
               <Pressable
                 onPress={() => handleTimerSelection(sound)}
@@ -95,6 +112,27 @@ export default function SettingsScreen() {
             ))}
           </View>
         )}
+        <ThemedText style={styles.sectionTitle} type="subtitle">
+          Miscellaneous
+        </ThemedText>
+        <View
+          style={{
+            ...styles.basicOption,
+            borderColor: accentColor,
+            backgroundColor,
+          }}
+        >
+          <ThemedText>Show Timers Hero Image</ThemedText>
+          <Switch
+            value={settings.showTimerHeroImage}
+            onValueChange={setShowTimerHeroImage}
+          />
+        </View>
+        <ThemedButton
+          style={styles.resetButton}
+          title="Delete All Timers"
+          onPress={handleDeleteTimerData}
+        />
       </ThemedView>
     </ScrollView>
   );
@@ -132,5 +170,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 8,
     borderTopWidth: 1,
+  },
+  resetButton: {
+    marginTop: 12,
   },
 });

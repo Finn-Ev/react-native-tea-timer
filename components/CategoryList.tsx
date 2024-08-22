@@ -52,7 +52,7 @@ export default function SelectCategory({
       <Pressable
         onPress={() => {
           Alert.prompt('Create category', 'Enter a name', text => {
-            if (text) {
+            if (text.length) {
               handleCreateCategory(text);
             }
           });

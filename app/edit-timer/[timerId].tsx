@@ -9,18 +9,28 @@ import ThemedTextInput from '../../components/theme/ThemedTextInput';
 import { ThemedView } from '../../components/theme/ThemedView';
 import { defaultCategoryId, useTimers } from '../../context/timersContext';
 
-export default function CreateTimerScreen() {
-  const { addTimer } = useTimers();
+export default function EditTimerScreen() {
+  const { updateTimer, getTimerCategoryByTimerId, getTimerById } = useTimers();
 
   const navigation = useNavigation();
   const router = useRouter();
 
-  const { categoryId: preSelectedCategoryId } = useLocalSearchParams();
+  const localSearchParams = useLocalSearchParams();
+  const timerId = localSearchParams.timerId as string;
 
-  const [title, setTitle] = useState('');
-  const [infusions, setInfusions] = useState<number[]>([0]);
+  if (!timerId) {
+    throw new Error('Timer id is required');
+  }
+
+  const initialTimerData = getTimerById(timerId);
+  const initialTimerCategory = getTimerCategoryByTimerId(timerId);
+
+  const [title, setTitle] = useState(initialTimerData.title);
+  const [infusions, setInfusions] = useState<number[]>(
+    initialTimerData.infusions
+  );
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    preSelectedCategoryId as string
+    initialTimerCategory.id
   );
 
   if (!selectedCategoryId) {
@@ -43,16 +53,15 @@ export default function CreateTimerScreen() {
       return;
     }
 
-    const timer = {
+    const updatedTimerData = {
       title,
       infusions,
-      id: Math.random().toString(36).substring(7),
     };
 
-    addTimer(selectedCategoryId, timer);
+    updateTimer(timerId, updatedTimerData);
 
     // Determine the appropriate route based on the category selection
-    if (selectedCategoryId === preSelectedCategoryId) {
+    if (selectedCategoryId === initialTimerCategory.id) {
       // If the category is unchanged, just go back to the previous screen
       router.back();
     } else if (selectedCategoryId === defaultCategoryId) {

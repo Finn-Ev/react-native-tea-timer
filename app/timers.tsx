@@ -48,8 +48,21 @@ export default function TimersScreen() {
               </Pressable>
             ))}
             {defaultCategory.timers.length > 0 && (
-              <View style={[styles.uncategorisedTimers, { borderColor }]}>
-                <ThemedText type="subtitle">{defaultCategory.title}</ThemedText>
+              <View
+                style={[
+                  styles.uncategorisedTimers,
+                  {
+                    borderColor: customTimerCategories.length
+                      ? borderColor
+                      : 'transparent',
+                  },
+                ]}
+              >
+                {customTimerCategories.length > 0 && (
+                  <ThemedText type="subtitle">
+                    {defaultCategory.title}
+                  </ThemedText>
+                )}
                 <TimerList timers={defaultCategory.timers} />
               </View>
             )}

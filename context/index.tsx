@@ -1,11 +1,14 @@
 import React, { ReactNode } from 'react';
-import { TimersProvider } from './timersContext';
+import { ClickOutsideProvider } from 'react-native-click-outside';
 import { SettingsProvider } from './settingsContext';
+import { TimersProvider } from './timersContext';
 
 export const ContextProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <TimersProvider>
-      <SettingsProvider>{children}</SettingsProvider>
-    </TimersProvider>
+    <ClickOutsideProvider>
+      <TimersProvider>
+        <SettingsProvider>{children}</SettingsProvider>
+      </TimersProvider>
+    </ClickOutsideProvider>
   );
 };
