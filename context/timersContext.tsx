@@ -29,7 +29,11 @@ export const TimersContext = createContext<
       deleteTimerCategory: (id: string) => void;
       getTimerCategoryByTimerId: (timerId: string) => TimerCategory;
       addTimer: (categoryId: string, timer: Timer) => void;
-      updateTimer: (timerId: string, updatedTimer: Partial<Timer>) => void;
+      updateTimer: (
+        timerId: string,
+        newCategoryId: string,
+        updatedTimerData: Partial<Timer>
+      ) => void;
       deleteTimer: (timerId: string) => void;
       getTimerById: (timerId: string) => Timer;
       clearAllTimerData: () => void;
@@ -121,22 +125,53 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
-  // Update an existing timer within a specific category
-  const updateTimer = (timerId: string, updatedTimer: Partial<Timer>) => {
-    const categoryId = getTimerCategoryByTimerId(timerId).id;
+  // Update an existing timer within a specific category and move it to a new category if necessary
+  const updateTimer = (
+    timerId: string,
+    selectedCategoryId: string,
+    updatedTimerData: Partial<Timer>
+  ) => {
+    setTimerCategories(prevCategories => {
+      // Find the current category and the timer using the helper functions
+      const currentCategory = getTimerCategoryByTimerId(timerId);
+      const timerToUpdate = getTimerById(timerId);
 
-    setTimerCategories(
-      timerCategories.map(category =>
-        category.id === categoryId
-          ? {
-              ...category,
-              timers: category.timers.map(timer =>
-                timer.id === timerId ? { ...timer, ...updatedTimer } : timer
-              ),
-            }
-          : category
-      )
-    );
+      const updatedTimer = { ...timerToUpdate, ...updatedTimerData };
+
+      // If the category hasn't changed, just update the timer within its current category
+      if (currentCategory.id === selectedCategoryId) {
+        return prevCategories.map(category =>
+          category.id === currentCategory.id
+            ? {
+                ...category,
+                timers: category.timers.map(timer =>
+                  timer.id === timerId ? updatedTimer : timer
+                ),
+              }
+            : category
+        );
+      }
+
+      // Otherwise move the timer to the new category
+      return prevCategories.map(category => {
+        // Remove the timer from its current category
+        if (category.id === currentCategory.id) {
+          return {
+            ...category,
+            timers: category.timers.filter(timer => timer.id !== timerId),
+          };
+        }
+
+        // Add the timer to the selected category
+        if (category.id === selectedCategoryId) {
+          return {
+            ...category,
+            timers: [...category.timers, updatedTimer],
+          };
+        }
+        return category;
+      });
+    });
   };
 
   // Delete a timer from a specific category
