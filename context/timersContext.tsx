@@ -27,7 +27,8 @@ export const TimersContext = createContext<
         updatedCategory: Partial<TimerCategory>
       ) => void;
       deleteTimerCategory: (id: string) => void;
-      getTimerCategoryByTimerId: (timerId: string) => TimerCategory;
+      getCategoryByTimerId: (timerId: string) => TimerCategory;
+      getCategoryById: (categoryId: string) => TimerCategory;
       addTimer: (categoryId: string, timer: Timer) => void;
       updateTimer: (
         timerId: string,
@@ -108,10 +109,14 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
     setTimerCategories(timerCategories.filter(category => category.id !== id));
   };
 
-  const getTimerCategoryByTimerId = (timerId: string) => {
+  const getCategoryByTimerId = (timerId: string) => {
     return timerCategories.find(category =>
       category.timers.some(timer => timer.id === timerId)
     )!;
+  };
+
+  const getCategoryById = (categoryId: string) => {
+    return timerCategories.find(category => category.id === categoryId)!;
   };
 
   // Add a new timer to a specific category
@@ -133,7 +138,7 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
   ) => {
     setTimerCategories(prevCategories => {
       // Find the current category and the timer using the helper functions
-      const currentCategory = getTimerCategoryByTimerId(timerId);
+      const currentCategory = getCategoryByTimerId(timerId);
       const timerToUpdate = getTimerById(timerId);
 
       const updatedTimer = { ...timerToUpdate, ...updatedTimerData };
@@ -193,7 +198,7 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const getTimerById = (timerId: string) => {
-    const category = getTimerCategoryByTimerId(timerId);
+    const category = getCategoryByTimerId(timerId);
     return category.timers.find(timer => timer.id === timerId)!;
   };
 
@@ -213,7 +218,8 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
         createTimerCategory,
         updateTimerCategory,
         deleteTimerCategory,
-        getTimerCategoryByTimerId,
+        getCategoryByTimerId,
+        getCategoryById,
         addTimer,
         updateTimer,
         deleteTimer,

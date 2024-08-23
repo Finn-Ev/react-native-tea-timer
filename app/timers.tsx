@@ -1,19 +1,16 @@
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedView } from '@/components/theme/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import CategoryGrid from '../components/CategoryGrid';
+import DefaultCategoryView from '../components/DefaultCategoryView';
 import { ThemedText } from '../components/theme/ThemedText';
-import TimerList from '../components/TimerList';
 import { useSettings } from '../context/settingsContext';
 import { useTimers } from '../context/timersContext';
-import { useThemeColor } from '../hooks/useThemeColor';
 
 export default function TimersScreen() {
   const { settings } = useSettings();
   const { customTimerCategories, defaultCategory } = useTimers();
-
-  const borderColor = useThemeColor('accent');
 
   const noContentToDisplay =
     customTimerCategories.length === 0 && defaultCategory.timers.length === 0;
@@ -35,37 +32,8 @@ export default function TimersScreen() {
           </ThemedView>
         ) : (
           <View style={styles.mainContent}>
-            {customTimerCategories.map(category => (
-              <Pressable
-                onPress={() => router.push(`/category/${category.id}`)}
-                key={category.id}
-              >
-                <ThemedText type="title">{category.title}</ThemedText>
-                <ThemedText type="subtitle">
-                  {category.timers.length}{' '}
-                  {category.timers.length === 1 ? 'timer' : 'timers'}
-                </ThemedText>
-              </Pressable>
-            ))}
-            {defaultCategory.timers.length > 0 && (
-              <View
-                style={[
-                  styles.uncategorisedTimers,
-                  {
-                    borderColor: customTimerCategories.length
-                      ? borderColor
-                      : 'transparent',
-                  },
-                ]}
-              >
-                {customTimerCategories.length > 0 && (
-                  <ThemedText type="subtitle">
-                    {defaultCategory.title}
-                  </ThemedText>
-                )}
-                <TimerList timers={defaultCategory.timers} />
-              </View>
-            )}
+            <CategoryGrid />
+            <DefaultCategoryView />
           </View>
         )}
       </ScrollView>
@@ -75,7 +43,7 @@ export default function TimersScreen() {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    minHeight: '100%',
+    flex: 1,
     position: 'relative',
   },
   scrollView: {
@@ -92,10 +60,5 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     padding: 8,
-  },
-  uncategorisedTimers: {
-    borderTopWidth: 1,
-    marginTop: 12,
-    paddingTop: 8,
   },
 });

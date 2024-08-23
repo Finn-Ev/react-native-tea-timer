@@ -3,7 +3,11 @@ import { defaultCategoryId, useTimers } from '@/context/timersContext';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 export default function EditTimerScreen() {
-  const { updateTimer, getTimerCategoryByTimerId, getTimerById } = useTimers();
+  const {
+    updateTimer,
+    getCategoryByTimerId: getTimerCategoryByTimerId,
+    getTimerById,
+  } = useTimers();
   const router = useRouter();
   const localSearchParams = useLocalSearchParams();
   const timerId = localSearchParams.timerId as string;

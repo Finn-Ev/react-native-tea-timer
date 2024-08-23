@@ -20,6 +20,7 @@ const ThemedTextInput = forwardRef<TextInput, ThemedTextInputProps>(
           </ThemedText>
         )}
         <TextInput
+          placeholderTextColor={accent}
           ref={ref}
           style={[
             styles.input,

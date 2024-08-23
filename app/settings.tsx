@@ -122,7 +122,7 @@ export default function SettingsScreen() {
             backgroundColor,
           }}
         >
-          <ThemedText>Show Timers Hero Image</ThemedText>
+          <ThemedText>Show Hero Image in Timer List</ThemedText>
           <Switch
             value={settings.showTimerHeroImage}
             onValueChange={setShowTimerHeroImage}

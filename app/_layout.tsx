@@ -44,7 +44,7 @@ export default function RootLayout() {
           <Stack.Screen
             name="timers"
             options={{
-              title: 'Timers',
+              title: '',
               headerTintColor: tintColor,
               headerLeft: ({ tintColor }) => (
                 <Link href="/settings">
@@ -97,9 +97,10 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="category/[categoryId]"
-            options={{
+            options={({ route }) => ({
               headerTintColor: tintColor,
-            }}
+              headerBackTitleVisible: false,
+            })}
           />
 
           <Stack.Screen name="+not-found" />

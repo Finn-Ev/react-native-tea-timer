@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useClickOutside } from 'react-native-click-outside';
@@ -7,15 +7,17 @@ import { Timer, useTimers } from '../context/timersContext';
 import { useThemeColor } from '../hooks/useThemeColor';
 import { ThemedText } from './theme/ThemedText';
 
-interface TimerListCardProps extends Timer {}
+interface TimerListCardProps extends Timer {
+  index: number;
+}
 
-export default function TimerListItem({
+export default function TimerGridItem({
   title,
   infusions,
   id,
+  index,
 }: TimerListCardProps) {
   const { deleteTimer } = useTimers();
-  const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // used to be able to close the dropdown menu when clicking outside of it
@@ -41,8 +43,15 @@ export default function TimerListItem({
   };
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.mainContent, { backgroundColor }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          zIndex: isDropdownOpen ? 1 : 0,
+        },
+      ]}
+    >
+      <View style={[styles.mainContent, { backgroundColor, borderColor }]}>
         <ThemedText style={styles.title}>{title}</ThemedText>
         <ThemedText>Infusions: {infusions.length}</ThemedText>
         <Pressable
@@ -58,21 +67,18 @@ export default function TimerListItem({
           style={[styles.dropdownMenu, { borderColor }]}
         >
           <Pressable
-            onPress={handleDeleteTimer}
+            onPress={() => router.push(`/edit-timer/${id}`)}
             style={[
               styles.dropdownOption,
               { borderBottomWidth: 1, borderColor },
             ]}
           >
-            <ThemedText>Delete</ThemedText>
-            {/* <Ionicons name="close-outline" size={20} /> */}
-          </Pressable>
-          <Pressable
-            onPress={() => router.push(`/edit-timer/${id}`)}
-            style={styles.dropdownOption}
-          >
             <ThemedText>Edit</ThemedText>
             {/* <Ionicons name="chevron-forward" size={22} /> */}
+          </Pressable>
+          <Pressable onPress={handleDeleteTimer} style={styles.dropdownOption}>
+            <ThemedText>Delete</ThemedText>
+            {/* <Ionicons name="close-outline" size={20} /> */}
           </Pressable>
         </View>
       )}
@@ -82,13 +88,13 @@ export default function TimerListItem({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 5,
-    width: '48%',
-    margin: '1%',
+    width: '49%',
+    marginBottom: 8,
   },
   mainContent: {
     padding: 8,
-    borderRadius: 5,
+    borderRadius: 12,
+    borderWidth: 1,
   },
   title: {
     fontSize: 18,
@@ -103,6 +109,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   dropdownMenu: {
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
     position: 'absolute',
     top: -2,
     right: 34,
