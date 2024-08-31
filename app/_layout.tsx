@@ -96,6 +96,18 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="timer/[timerId]"
+            options={{
+              presentation: 'fullScreenModal',
+              headerTintColor: tintColor,
+              headerLeft: ({ tintColor }) => (
+                <Pressable onPress={() => router.back()}>
+                  <Ionicons name="close" color={tintColor} size={28} />
+                </Pressable>
+              ),
+            }}
+          />
+          <Stack.Screen
             name="category/[categoryId]"
             options={({ route }) => ({
               headerTintColor: tintColor,

@@ -51,7 +51,10 @@ export default function TimerGridItem({
         },
       ]}
     >
-      <View style={[styles.mainContent, { backgroundColor, borderColor }]}>
+      <Pressable
+        onPress={() => router.push(`/timer/${id}`)}
+        style={[styles.mainContent, { backgroundColor, borderColor }]}
+      >
         <ThemedText style={styles.title}>{title}</ThemedText>
         <ThemedText>Infusions: {infusions.length}</ThemedText>
         <Pressable
@@ -60,7 +63,7 @@ export default function TimerGridItem({
         >
           <Ionicons name="ellipsis-horizontal" size={22} />
         </Pressable>
-      </View>
+      </Pressable>
       {isDropdownOpen && (
         <View
           ref={dropdownMenuRef}

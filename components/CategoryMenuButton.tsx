@@ -50,7 +50,7 @@ export default function CategoryMenuButton({
               'Are you sure you want to delete this category and all its timers?',
               [
                 {
-                  text: 'Yes, delete',
+                  text: 'Delete',
                   style: 'destructive',
                   onPress: () => {
                     deleteTimerCategory(category.id);
