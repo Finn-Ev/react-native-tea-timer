@@ -6,6 +6,7 @@ export type Settings = {
   muteTimerSounds: boolean;
   selectedTimerSound: TimerSound | null;
   availableTimerSounds: TimerSound[];
+  // TODO 
 };
 
 export type TimerSound = {
