@@ -11,8 +11,7 @@ interface TimerExecutionViewProps extends Timer {}
 
 export default function TimerExecutionView({ id, infusions }: TimerExecutionViewProps) {
   const navigation = useNavigation();
-  const [currentInfusionIndex, setCurrentInfusionIndex] = useState<number | null>(null);
-  const [shouldStartTimerAutomatically, setShouldStartTimerAutomatically] = useState(false);
+  const [currentInfusionIndex, setCurrentInfusionIndex] = useState(0);
   const [areAllInfusionsDone, setAreAllInfusionsDone] = useState(false);
 
   const borderColor = useThemeColor("accent");
@@ -23,20 +22,17 @@ export default function TimerExecutionView({ id, infusions }: TimerExecutionView
 
   const handleStart = () => {
     setCurrentInfusionIndex(0);
-    setShouldStartTimerAutomatically(true);
   };
 
   const handlePrevious = () => {
     if (currentInfusionIndex !== null && currentInfusionIndex > 0) {
       setCurrentInfusionIndex(currentInfusionIndex - 1);
-      setShouldStartTimerAutomatically(false); // Prevent the timer from auto-starting when navigating back
     }
   };
 
   const handleNext = () => {
     if (currentInfusionIndex !== null && currentInfusionIndex < infusions.length - 1) {
       setCurrentInfusionIndex(currentInfusionIndex + 1);
-      setShouldStartTimerAutomatically(false); // Prevent the timer from auto-starting when navigating forward
     }
   };
 
@@ -50,7 +46,6 @@ export default function TimerExecutionView({ id, infusions }: TimerExecutionView
           onPress={() => {
             setCurrentInfusionIndex(0);
             setAreAllInfusionsDone(false);
-            // setShouldStartTimerAutomatically(true);
           }}
         >
           <ThemedText>Restart</ThemedText>
@@ -69,40 +64,31 @@ export default function TimerExecutionView({ id, infusions }: TimerExecutionView
 
   return (
     <ThemedView style={[styles.container, { borderColor }]}>
-      {currentInfusionIndex === null ? (
-        <Pressable onPress={handleStart}>
-          <ThemedText>Start</ThemedText>
-        </Pressable>
-      ) : (
-        <>
-          <ThemedText>
-            {currentInfusionIndex + 1}. Infusion: {infusions[currentInfusionIndex]} sec.
-          </ThemedText>
-          <TimerClock
-            infusions={infusions}
-            currentInfusionIndex={currentInfusionIndex}
-            setCurrentInfusionIndex={setCurrentInfusionIndex}
-            shouldStartTimerAutomatically={shouldStartTimerAutomatically}
-            areAllInfusionsDone={areAllInfusionsDone}
-            setAreAllInfusionsDone={setAreAllInfusionsDone}
-          />
-          <Pressable disabled={nextInfusionButtonDisabled} onPress={handleNext}>
-            <ThemedText style={[nextInfusionButtonDisabled && { color: disabledContentColor }]}>Next</ThemedText>
-          </Pressable>
+      <ThemedText>
+        {currentInfusionIndex + 1}. Infusion: {infusions[currentInfusionIndex]} sec.
+      </ThemedText>
+      <TimerClock
+        infusions={infusions}
+        currentInfusionIndex={currentInfusionIndex}
+        setCurrentInfusionIndex={setCurrentInfusionIndex}
+        areAllInfusionsDone={areAllInfusionsDone}
+        setAreAllInfusionsDone={setAreAllInfusionsDone}
+      />
+      <Pressable disabled={nextInfusionButtonDisabled} onPress={handleNext}>
+        <ThemedText style={[nextInfusionButtonDisabled && { color: disabledContentColor }]}>Next</ThemedText>
+      </Pressable>
 
-          <Pressable disabled={previousInfusionButtonDisabled} onPress={handlePrevious}>
-            <ThemedText
-              style={[
-                previousInfusionButtonDisabled && {
-                  color: disabledContentColor,
-                },
-              ]}
-            >
-              Previous
-            </ThemedText>
-          </Pressable>
-        </>
-      )}
+      <Pressable disabled={previousInfusionButtonDisabled} onPress={handlePrevious}>
+        <ThemedText
+          style={[
+            previousInfusionButtonDisabled && {
+              color: disabledContentColor,
+            },
+          ]}
+        >
+          Previous
+        </ThemedText>
+      </Pressable>
     </ThemedView>
   );
 }

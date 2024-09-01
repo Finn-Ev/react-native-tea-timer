@@ -6,7 +6,6 @@ interface TimerClockProps {
   infusions: number[];
   currentInfusionIndex: number;
   setCurrentInfusionIndex: (index: number) => void;
-  shouldStartTimerAutomatically: boolean;
   areAllInfusionsDone: boolean;
   setAreAllInfusionsDone: (done: boolean) => void;
 }
@@ -15,7 +14,6 @@ export default function TimerClock({
   infusions,
   currentInfusionIndex,
   setCurrentInfusionIndex,
-  shouldStartTimerAutomatically,
   areAllInfusionsDone,
   setAreAllInfusionsDone,
 }: TimerClockProps) {
@@ -54,12 +52,7 @@ export default function TimerClock({
     setDisplayedDuration(infusions[currentInfusionIndex]);
     setIsRunning(false);
     setIsPaused(false);
-
-    // Only start the timer automatically if the user clicked the Start button
-    if (currentInfusionIndex === 0 && shouldStartTimerAutomatically) {
-      setIsRunning(true);
-    }
-  }, [currentInfusionIndex, shouldStartTimerAutomatically]);
+  }, [currentInfusionIndex]);
 
   const handlePauseResume = () => {
     if (isRunning) {
