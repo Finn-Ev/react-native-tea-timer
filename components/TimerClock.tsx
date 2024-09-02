@@ -87,8 +87,8 @@ export default function TimerClock({
             style={[
               styles.displayDigit,
               {
-                // vertically align the colon
-                marginTop: index === 2 ? -6 : 0,
+                marginTop: index === 2 ? -6 : 0, // vertically align the colon
+                marginHorizontal: index === 2 ? -4 : 0, // reduce spacing around the colon
               },
             ]}
           >
@@ -117,7 +117,7 @@ export default function TimerClock({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 16,
+    marginVertical: 12,
     display: "flex",
     alignItems: "center",
     padding: 16,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginTop: 16,
+    marginTop: 28,
     gap: 16,
   },
   actionButton: {
