@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { useSettings } from "../context/settingsContext";
 import { useThemeColor } from "../hooks/useThemeColor";
 import ThemedButton from "./theme/ThemedButton";
 
@@ -16,11 +17,13 @@ export default function TimerClock({
   setCurrentInfusionIndex,
   setAreAllInfusionsDone,
 }: TimerClockProps) {
-  const secondaryColor = useThemeColor("secondary");
+  const { settings } = useSettings();
 
   const [displayedDuration, setDisplayedDuration] = useState(infusions[currentInfusionIndex]);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+
+  const secondaryColor = useThemeColor("secondary");
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -29,14 +32,8 @@ export default function TimerClock({
       interval = setInterval(() => {
         setDisplayedDuration((prevDuration) => {
           if (prevDuration <= 1) {
+            handleTimerEnd();
             clearInterval(interval!);
-            setIsRunning(false);
-            setIsPaused(false);
-            if (currentInfusionIndex < infusions.length - 1) {
-              setCurrentInfusionIndex(currentInfusionIndex + 1);
-            } else {
-              setAreAllInfusionsDone(true);
-            }
             return 0;
           }
           return prevDuration - 1;
@@ -54,6 +51,26 @@ export default function TimerClock({
     setIsRunning(false);
     setIsPaused(false);
   }, [currentInfusionIndex]);
+
+  const handleTimerEnd = async () => {
+    if (!settings.muteTimerSounds) {
+      console.log("Loading Sound");
+      //   const { sound: loadedSound } = await Audio.Sound.createAsync(require(settings.selectedTimerSound!.audioFilePath));
+      console.log("Playing Sound");
+      //   await loadedSound.playAsync();
+    }
+
+    // automatically move to the next infusion if available
+    if (currentInfusionIndex < infusions.length - 1) {
+      setCurrentInfusionIndex(currentInfusionIndex + 1);
+    } else {
+      setAreAllInfusionsDone(true);
+    }
+
+    // clean up
+    setIsRunning(false);
+    setIsPaused(false);
+  };
 
   const handlePauseResume = () => {
     if (isRunning) {

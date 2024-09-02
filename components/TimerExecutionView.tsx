@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Timer } from "../context/timersContext";
 import { useThemeColor } from "../hooks/useThemeColor";
+import ThemedButton from "./theme/ThemedButton";
 import { ThemedText } from "./theme/ThemedText";
 import { ThemedView } from "./theme/ThemedView";
 import TimerClock from "./TimerClock";
@@ -38,22 +39,13 @@ export default function TimerExecutionView({ infusions }: TimerExecutionViewProp
       <ThemedView style={[styles.container, { borderColor, backgroundColor }]}>
         <ThemedText>All infusions are done!</ThemedText>
 
-        <Pressable
+        <ThemedButton
           onPress={() => {
             setCurrentInfusionIndex(0);
             setAreAllInfusionsDone(false);
           }}
-        >
-          <ThemedText>Restart</ThemedText>
-        </Pressable>
-
-        <Pressable
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <ThemedText>Back</ThemedText>
-        </Pressable>
+          title="Restart"
+        />
       </ThemedView>
     );
   }
@@ -69,7 +61,7 @@ export default function TimerExecutionView({ infusions }: TimerExecutionViewProp
         setCurrentInfusionIndex={setCurrentInfusionIndex}
         setAreAllInfusionsDone={setAreAllInfusionsDone}
       />
-      <View style={styles.timerButtons}>
+      <View style={[styles.timerButtons]}>
         <Pressable disabled={previousInfusionButtonDisabled} onPress={handlePrevious}>
           <ThemedText
             style={[
@@ -96,6 +88,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
     borderWidth: 1,
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
   },
   infusionCount: {
     textAlign: "center",
@@ -106,5 +101,6 @@ const styles = StyleSheet.create({
   timerButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
+    width: "100%",
   },
 });
