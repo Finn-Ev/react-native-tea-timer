@@ -2,7 +2,6 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { ThemedView } from "../../components/theme/ThemedView";
-import TimerDetailView from "../../components/TimerDetailView";
 import TimerExecutionView from "../../components/TimerExecutionView";
 import { useTimers } from "../../context/timersContext";
 
@@ -25,7 +24,6 @@ export default function ExecuteTimerScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <TimerDetailView {...timer} />
       <TimerExecutionView {...timer} />
     </ThemedView>
   );

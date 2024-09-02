@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, View } from "react-native";
-import { ThemedText } from "./theme/ThemedText";
+import { StyleSheet, Text, View } from "react-native";
+import { useThemeColor } from "../hooks/useThemeColor";
+import ThemedButton from "./theme/ThemedButton";
 
 interface TimerClockProps {
   infusions: number[];
   currentInfusionIndex: number;
   setCurrentInfusionIndex: (index: number) => void;
-  areAllInfusionsDone: boolean;
   setAreAllInfusionsDone: (done: boolean) => void;
 }
 
@@ -14,9 +14,10 @@ export default function TimerClock({
   infusions,
   currentInfusionIndex,
   setCurrentInfusionIndex,
-  areAllInfusionsDone,
   setAreAllInfusionsDone,
 }: TimerClockProps) {
+  const secondaryColor = useThemeColor("secondary");
+
   const [displayedDuration, setDisplayedDuration] = useState(infusions[currentInfusionIndex]);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -29,7 +30,7 @@ export default function TimerClock({
         setDisplayedDuration((prevDuration) => {
           if (prevDuration <= 1) {
             clearInterval(interval!);
-            setIsRunning(false); // Stop the timer when it reaches 0
+            setIsRunning(false);
             setIsPaused(false);
             if (currentInfusionIndex < infusions.length - 1) {
               setCurrentInfusionIndex(currentInfusionIndex + 1);
@@ -68,12 +69,81 @@ export default function TimerClock({
     setIsPaused(false);
   };
 
-  return (
-    <View>
-      <ThemedText>{displayedDuration}</ThemedText>
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    const timeString = `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+    return timeString.split("");
+  };
 
-      <Button onPress={handlePauseResume} title={isPaused || !isRunning ? "Start" : "Pause"} />
-      <Button onPress={handleReset} title="Reset" />
+  const timeArray = formatTime(displayedDuration);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.clockWrapper}>
+        {timeArray.map((char, index) => (
+          <Text
+            key={index}
+            style={[
+              styles.displayDigit,
+              {
+                // vertically align the colon
+                marginTop: index === 2 ? -6 : 0,
+              },
+            ]}
+          >
+            {char}
+          </Text>
+        ))}
+      </View>
+
+      <View style={styles.actionButtonContainer}>
+        <ThemedButton
+          onPress={handleReset}
+          title={"Reset"}
+          style={[styles.actionButton, { backgroundColor: secondaryColor }]}
+          fontSize={18}
+        />
+        <ThemedButton
+          onPress={handlePauseResume}
+          title={isPaused || !isRunning ? "Start" : "Pause"}
+          style={[styles.actionButton, { backgroundColor: secondaryColor }]}
+          fontSize={18}
+        />
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 16,
+    display: "flex",
+    alignItems: "center",
+    padding: 16,
+  },
+  clockWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  displayDigit: {
+    fontSize: 42,
+    fontWeight: "normal",
+    textAlign: "center",
+    width: 26,
+  },
+  actionButtonContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginTop: 16,
+    gap: 16,
+  },
+  actionButton: {
+    backgroundColor: "lightblue",
+    borderRadius: 8,
+    width: 75,
+  },
+});

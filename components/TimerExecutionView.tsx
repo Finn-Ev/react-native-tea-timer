@@ -1,6 +1,6 @@
 import { useNavigation } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Timer } from "../context/timersContext";
 import { useThemeColor } from "../hooks/useThemeColor";
 import { ThemedText } from "./theme/ThemedText";
@@ -9,20 +9,17 @@ import TimerClock from "./TimerClock";
 
 interface TimerExecutionViewProps extends Timer {}
 
-export default function TimerExecutionView({ id, infusions }: TimerExecutionViewProps) {
+export default function TimerExecutionView({ infusions }: TimerExecutionViewProps) {
   const navigation = useNavigation();
   const [currentInfusionIndex, setCurrentInfusionIndex] = useState(0);
   const [areAllInfusionsDone, setAreAllInfusionsDone] = useState(false);
 
   const borderColor = useThemeColor("accent");
   const disabledContentColor = useThemeColor("accent");
+  const backgroundColor = useThemeColor("content");
 
-  const nextInfusionButtonDisabled = currentInfusionIndex === infusions.length - 1;
+  const skipInfusionButtonDisabled = currentInfusionIndex === infusions.length - 1;
   const previousInfusionButtonDisabled = currentInfusionIndex === null || currentInfusionIndex === 0;
-
-  const handleStart = () => {
-    setCurrentInfusionIndex(0);
-  };
 
   const handlePrevious = () => {
     if (currentInfusionIndex !== null && currentInfusionIndex > 0) {
@@ -30,7 +27,7 @@ export default function TimerExecutionView({ id, infusions }: TimerExecutionView
     }
   };
 
-  const handleNext = () => {
+  const handleSkip = () => {
     if (currentInfusionIndex !== null && currentInfusionIndex < infusions.length - 1) {
       setCurrentInfusionIndex(currentInfusionIndex + 1);
     }
@@ -38,10 +35,9 @@ export default function TimerExecutionView({ id, infusions }: TimerExecutionView
 
   if (areAllInfusionsDone) {
     return (
-      <ThemedView style={[styles.container, { borderColor }]}>
+      <ThemedView style={[styles.container, { borderColor, backgroundColor }]}>
         <ThemedText>All infusions are done!</ThemedText>
 
-        {/* restart button and back button */}
         <Pressable
           onPress={() => {
             setCurrentInfusionIndex(0);
@@ -63,32 +59,33 @@ export default function TimerExecutionView({ id, infusions }: TimerExecutionView
   }
 
   return (
-    <ThemedView style={[styles.container, { borderColor }]}>
-      <ThemedText>
-        {currentInfusionIndex + 1}. Infusion: {infusions[currentInfusionIndex]} sec.
+    <ThemedView style={[styles.container, { borderColor, backgroundColor }]}>
+      <ThemedText style={styles.infusionCount}>
+        Infusion {currentInfusionIndex + 1} of {infusions.length}
       </ThemedText>
       <TimerClock
         infusions={infusions}
         currentInfusionIndex={currentInfusionIndex}
         setCurrentInfusionIndex={setCurrentInfusionIndex}
-        areAllInfusionsDone={areAllInfusionsDone}
         setAreAllInfusionsDone={setAreAllInfusionsDone}
       />
-      <Pressable disabled={nextInfusionButtonDisabled} onPress={handleNext}>
-        <ThemedText style={[nextInfusionButtonDisabled && { color: disabledContentColor }]}>Next</ThemedText>
-      </Pressable>
+      <View style={styles.timerButtons}>
+        <Pressable disabled={previousInfusionButtonDisabled} onPress={handlePrevious}>
+          <ThemedText
+            style={[
+              previousInfusionButtonDisabled && {
+                color: disabledContentColor,
+              },
+            ]}
+          >
+            Previous
+          </ThemedText>
+        </Pressable>
 
-      <Pressable disabled={previousInfusionButtonDisabled} onPress={handlePrevious}>
-        <ThemedText
-          style={[
-            previousInfusionButtonDisabled && {
-              color: disabledContentColor,
-            },
-          ]}
-        >
-          Previous
-        </ThemedText>
-      </Pressable>
+        <Pressable disabled={skipInfusionButtonDisabled} onPress={handleSkip}>
+          <ThemedText style={[skipInfusionButtonDisabled && { color: disabledContentColor }]}>Skip</ThemedText>
+        </Pressable>
+      </View>
     </ThemedView>
   );
 }
@@ -99,5 +96,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
     borderWidth: 1,
+  },
+  infusionCount: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "semibold",
+    marginTop: 8,
+  },
+  timerButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
