@@ -1,6 +1,6 @@
 import ThemedIcon from "@/components/theme/ThemedIcon";
 import { useRef } from "react";
-import { Platform, TextInput as RNTextInput, StyleSheet, View } from "react-native";
+import { TextInput as RNTextInput, StyleSheet, View } from "react-native";
 import { useThemeColor } from "../hooks/useThemeColor";
 import { ThemedText } from "./theme/ThemedText";
 import ThemedTextInput from "./theme/ThemedTextInput";
@@ -23,18 +23,9 @@ export default function InfusionCard({ index, duration, onDurationChange, delete
     const input = durationInputRef.current;
 
     if (input) {
-      if (Platform.OS === "web") {
-        const webInput = input as unknown as HTMLInputElement;
-        // use timeout to prevent reset of selection (workaround)
-        setTimeout(() => {
-          webInput.setSelectionRange(0, webInput.value.length);
-        }, 10);
-      } else {
-        // React Native (iOS/Android) solution
-        input.setNativeProps({
-          selection: { start: 0, end: duration.toString().length },
-        });
-      }
+      input.setNativeProps({
+        selection: { start: 0, end: duration.toString().length },
+      });
     }
   };
 
