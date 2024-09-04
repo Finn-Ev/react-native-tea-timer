@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Storage } from "../lib/storage";
 
-export const defaultCategoryId = '__default__';
+export const defaultCategoryId = "__default__";
 
 // Define types for Timer and TimerCategory
 export type TimerCategory = {
@@ -22,19 +22,12 @@ export const TimersContext = createContext<
       customTimerCategories: TimerCategory[];
       defaultCategory: TimerCategory;
       createTimerCategory: (title: string) => TimerCategory;
-      updateTimerCategory: (
-        id: string,
-        updatedCategory: Partial<TimerCategory>
-      ) => void;
+      updateTimerCategory: (id: string, updatedCategory: Partial<TimerCategory>) => void;
       deleteTimerCategory: (id: string) => void;
       getCategoryByTimerId: (timerId: string) => TimerCategory;
       getCategoryById: (categoryId: string) => TimerCategory;
       addTimer: (categoryId: string, timer: Timer) => void;
-      updateTimer: (
-        timerId: string,
-        newCategoryId: string,
-        updatedTimerData: Partial<Timer>
-      ) => void;
+      updateTimer: (timerId: string, newCategoryId: string, updatedTimerData: Partial<Timer>) => void;
       deleteTimer: (timerId: string) => void;
       getTimerById: (timerId: string) => Timer;
       clearAllTimerData: () => void;
@@ -43,41 +36,37 @@ export const TimersContext = createContext<
 >(undefined);
 
 // TimersProvider component to manage state and provide context
-export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const defaultCategory: TimerCategory = {
     id: defaultCategoryId,
-    title: 'Other Timers',
+    title: "Other Timers",
     timers: [],
   };
 
-  const [timerCategories, setTimerCategories] = useState<TimerCategory[]>([
-    defaultCategory,
-  ]);
+  const [timerCategories, setTimerCategories] = useState<TimerCategory[]>([defaultCategory]);
 
   // Load categories from localStorage when the component mounts
   useEffect(() => {
-    // AsyncStorage.clear();
+    Storage.getInstance()
+      .getItem("timerCategories")
+      .then((savedCategories) => {
+        if (!savedCategories) {
+          return;
+        }
 
-    AsyncStorage.getItem('timerCategories').then(savedCategories => {
-      if (!savedCategories) {
-        return;
-      }
+        const parsedCategories: TimerCategory[] = JSON.parse(savedCategories);
 
-      const parsedCategories: TimerCategory[] = JSON.parse(savedCategories);
-
-      if (parsedCategories.length) {
-        setTimerCategories(parsedCategories);
-      } else {
-        throw new Error('No saved categories. This should not be possible.');
-      }
-    });
+        if (parsedCategories.length) {
+          setTimerCategories(parsedCategories);
+        } else {
+          throw new Error("No saved categories. This should not be possible.");
+        }
+      });
   }, []);
 
   // Save categories to localStorage whenever timerCategories state changes
   useEffect(() => {
-    AsyncStorage.setItem('timerCategories', JSON.stringify(timerCategories));
+    Storage.getInstance().setItem("timerCategories", JSON.stringify(timerCategories));
   }, [timerCategories]);
 
   // Add a new timer category
@@ -93,50 +82,37 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Update an existing timer category by id
-  const updateTimerCategory = (
-    id: string,
-    updatedCategory: Partial<TimerCategory>
-  ) => {
+  const updateTimerCategory = (id: string, updatedCategory: Partial<TimerCategory>) => {
     setTimerCategories(
-      timerCategories.map(category =>
-        category.id === id ? { ...category, ...updatedCategory } : category
-      )
+      timerCategories.map((category) => (category.id === id ? { ...category, ...updatedCategory } : category))
     );
   };
 
   // Delete a timer category by id
   const deleteTimerCategory = (id: string) => {
-    setTimerCategories(timerCategories.filter(category => category.id !== id));
+    setTimerCategories(timerCategories.filter((category) => category.id !== id));
   };
 
   const getCategoryByTimerId = (timerId: string) => {
-    return timerCategories.find(category =>
-      category.timers.some(timer => timer.id === timerId)
-    )!;
+    return timerCategories.find((category) => category.timers.some((timer) => timer.id === timerId))!;
   };
 
   const getCategoryById = (categoryId: string) => {
-    return timerCategories.find(category => category.id === categoryId)!;
+    return timerCategories.find((category) => category.id === categoryId)!;
   };
 
   // Add a new timer to a specific category
   const addTimer = (categoryId: string, timer: Timer) => {
     setTimerCategories(
-      timerCategories.map(category =>
-        category.id === categoryId
-          ? { ...category, timers: [...category.timers, timer] }
-          : category
+      timerCategories.map((category) =>
+        category.id === categoryId ? { ...category, timers: [...category.timers, timer] } : category
       )
     );
   };
 
   // Update an existing timer within a specific category and move it to a new category if necessary
-  const updateTimer = (
-    timerId: string,
-    selectedCategoryId: string,
-    updatedTimerData: Partial<Timer>
-  ) => {
-    setTimerCategories(prevCategories => {
+  const updateTimer = (timerId: string, selectedCategoryId: string, updatedTimerData: Partial<Timer>) => {
+    setTimerCategories((prevCategories) => {
       // Find the current category and the timer using the helper functions
       const currentCategory = getCategoryByTimerId(timerId);
       const timerToUpdate = getTimerById(timerId);
@@ -145,25 +121,23 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // If the category hasn't changed, just update the timer within its current category
       if (currentCategory.id === selectedCategoryId) {
-        return prevCategories.map(category =>
+        return prevCategories.map((category) =>
           category.id === currentCategory.id
             ? {
                 ...category,
-                timers: category.timers.map(timer =>
-                  timer.id === timerId ? updatedTimer : timer
-                ),
+                timers: category.timers.map((timer) => (timer.id === timerId ? updatedTimer : timer)),
               }
             : category
         );
       }
 
       // Otherwise move the timer to the new category
-      return prevCategories.map(category => {
+      return prevCategories.map((category) => {
         // Remove the timer from its current category
         if (category.id === currentCategory.id) {
           return {
             ...category,
-            timers: category.timers.filter(timer => timer.id !== timerId),
+            timers: category.timers.filter((timer) => timer.id !== timerId),
           };
         }
 
@@ -181,16 +155,14 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Delete a timer from a specific category
   const deleteTimer = (timerId: string) => {
-    const categoryId = timerCategories.find(category =>
-      category.timers.some(timer => timer.id === timerId)
-    )?.id;
+    const categoryId = timerCategories.find((category) => category.timers.some((timer) => timer.id === timerId))?.id;
 
     setTimerCategories(
-      timerCategories.map(category =>
+      timerCategories.map((category) =>
         category.id === categoryId
           ? {
               ...category,
-              timers: category.timers.filter(timer => timer.id !== timerId),
+              timers: category.timers.filter((timer) => timer.id !== timerId),
             }
           : category
       )
@@ -199,7 +171,7 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const getTimerById = (timerId: string) => {
     const category = getCategoryByTimerId(timerId);
-    return category.timers.find(timer => timer.id === timerId)!;
+    return category.timers.find((timer) => timer.id === timerId)!;
   };
 
   const clearAllTimerData = () => {
@@ -209,12 +181,8 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <TimersContext.Provider
       value={{
-        customTimerCategories: timerCategories.filter(
-          category => category.id !== defaultCategoryId
-        ),
-        defaultCategory: timerCategories.find(
-          category => category.id === defaultCategoryId
-        )!,
+        customTimerCategories: timerCategories.filter((category) => category.id !== defaultCategoryId),
+        defaultCategory: timerCategories.find((category) => category.id === defaultCategoryId)!,
         createTimerCategory,
         updateTimerCategory,
         deleteTimerCategory,
@@ -235,7 +203,7 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useTimers = () => {
   const context = useContext(TimersContext);
   if (!context) {
-    throw new Error('useTimers must be used within a TimersProvider');
+    throw new Error("useTimers must be used within a TimersProvider");
   }
   return context;
 };

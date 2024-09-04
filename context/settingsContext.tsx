@@ -1,11 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Or localStorage for web
 import { Audio } from "expo-av";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { Storage } from "../lib/storage";
 
 export type TimerSound = {
   id: string;
   name: string;
-  audioFilePath: number; // Update this to expect a module reference
+  audioFilePath: number;
   soundObject?: Audio.Sound;
 };
 
@@ -27,7 +27,6 @@ const initialAvailableTimerSounds: TimerSound[] = [
   { id: "2", name: "Bell", audioFilePath: require("@/assets/sounds/bell.mp3") },
 ];
 
-// Create SettingsContext
 const SettingsContext = createContext<
   | {
       settings: Settings;
@@ -65,7 +64,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     const loadSettings = async () => {
       try {
-        const savedSettings = await AsyncStorage.getItem("settings");
+        const savedSettings = await Storage.getInstance().getItem("settings");
         if (savedSettings) {
           const parsedSettings = JSON.parse(savedSettings);
           setSettings((prevSettings) => ({
@@ -87,11 +86,11 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
   }, []);
 
-  // Save settings to AsyncStorage whenever settings change
+  // Save settings to storage whenever settings change
   useEffect(() => {
     const saveSettings = async () => {
       try {
-        await AsyncStorage.setItem("settings", JSON.stringify(settings));
+        await Storage.getInstance().setItem("settings", JSON.stringify(settings));
       } catch (error) {
         console.error("Failed to save settings", error);
       }

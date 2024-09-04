@@ -1,30 +1,32 @@
-import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { useTimers } from '../context/timersContext';
-import { useThemeColor } from '../hooks/useThemeColor';
-import { ThemedText } from './theme/ThemedText';
-import { ThemedView } from './theme/ThemedView';
-import TimerGrid from './TimerGrid';
+import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import { useTimers } from "../context/timersContext";
+import { useThemeColor } from "../hooks/useThemeColor";
+import { Storage } from "../lib/storage";
+import { ThemedText } from "./theme/ThemedText";
+import { ThemedView } from "./theme/ThemedView";
+import TimerGrid from "./TimerGrid";
 
 export default function DefaultCategoryView() {
-  const asyncStorageKey = 'isDefaultTimerCategoryExpanded';
+  const storageKey = "isDefaultTimerCategoryExpanded";
 
   const { defaultCategory, customTimerCategories } = useTimers();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const borderColor = useThemeColor('accent');
+  const borderColor = useThemeColor("accent");
 
   useEffect(() => {
-    AsyncStorage.getItem(asyncStorageKey).then(value => {
-      setIsExpanded(value === 'true');
-    });
+    Storage.getInstance()
+      .getItem(storageKey)
+      .then((value) => {
+        setIsExpanded(value === "true");
+      });
   }, []);
 
   useEffect(() => {
-    AsyncStorage.setItem(asyncStorageKey, JSON.stringify(isExpanded));
+    Storage.getInstance().setItem(storageKey, JSON.stringify(isExpanded));
   }, [isExpanded]);
 
   return (
@@ -37,24 +39,14 @@ export default function DefaultCategoryView() {
               {
                 marginTop: customTimerCategories.length ? 12 : 0,
                 paddingTop: customTimerCategories.length ? 12 : 0,
-                borderColor: customTimerCategories.length
-                  ? borderColor
-                  : 'transparent',
+                borderColor: customTimerCategories.length ? borderColor : "transparent",
               },
             ]}
           >
             {customTimerCategories.length > 0 && (
-              <Pressable
-                style={styles.uncategorisedTimersTitleWrapper}
-                onPress={() => setIsExpanded(!isExpanded)}
-              >
-                <ThemedText style={styles.uncategorisedTimersTitle}>
-                  {defaultCategory.title}
-                </ThemedText>
-                <Ionicons
-                  name={isExpanded ? 'chevron-down' : 'chevron-forward'}
-                  size={24}
-                />
+              <Pressable style={styles.uncategorisedTimersTitleWrapper} onPress={() => setIsExpanded(!isExpanded)}>
+                <ThemedText style={styles.uncategorisedTimersTitle}>{defaultCategory.title}</ThemedText>
+                <Ionicons name={isExpanded ? "chevron-down" : "chevron-forward"} size={24} />
               </Pressable>
             )}
             {isExpanded && <TimerGrid timers={defaultCategory.timers} />}
@@ -70,8 +62,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   uncategorisedTimersTitleWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   uncategorisedTimersTitle: {
     fontSize: 18,
