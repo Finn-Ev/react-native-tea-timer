@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useTimers } from "../context/timersContext";
 import { useThemeColor } from "../hooks/useThemeColor";
-import { Storage } from "../lib/storage";
 import { ThemedText } from "./theme/ThemedText";
 import { ThemedView } from "./theme/ThemedView";
 import TimerGrid from "./TimerGrid";
@@ -18,15 +18,13 @@ export default function DefaultCategoryView() {
   const borderColor = useThemeColor("accent");
 
   useEffect(() => {
-    Storage.getInstance()
-      .getItem(storageKey)
-      .then((value) => {
-        setIsExpanded(value === "true");
-      });
+    AsyncStorage.getItem(storageKey).then((value) => {
+      setIsExpanded(value === "true");
+    });
   }, []);
 
   useEffect(() => {
-    Storage.getInstance().setItem(storageKey, JSON.stringify(isExpanded));
+    AsyncStorage.setItem(storageKey, JSON.stringify(isExpanded));
   }, [isExpanded]);
 
   return (

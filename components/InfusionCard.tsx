@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  durationValue: { width: 58, textAlign: "center", fontSize: 16 },
+  durationValue: { width: 58, textAlign: "center" },
   deleteButton: {
     padding: 12,
   },

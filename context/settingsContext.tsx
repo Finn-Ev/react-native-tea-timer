@@ -1,6 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Audio } from "expo-av";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Storage } from "../lib/storage";
 
 export type TimerSound = {
   id: string;
@@ -64,7 +64,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     const loadSettings = async () => {
       try {
-        const savedSettings = await Storage.getInstance().getItem("settings");
+        const savedSettings = await AsyncStorage.getItem("settings");
         if (savedSettings) {
           const parsedSettings = JSON.parse(savedSettings);
           setSettings((prevSettings) => ({
@@ -90,7 +90,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const saveSettings = async () => {
       try {
-        await Storage.getInstance().setItem("settings", JSON.stringify(settings));
+        await AsyncStorage.setItem("settings", JSON.stringify(settings));
       } catch (error) {
         console.error("Failed to save settings", error);
       }

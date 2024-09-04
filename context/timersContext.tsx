@@ -1,5 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Storage } from "../lib/storage";
 
 export const defaultCategoryId = "__default__";
 
@@ -47,26 +47,24 @@ export const TimersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Load categories from localStorage when the component mounts
   useEffect(() => {
-    Storage.getInstance()
-      .getItem("timerCategories")
-      .then((savedCategories) => {
-        if (!savedCategories) {
-          return;
-        }
+    AsyncStorage.getItem("timerCategories").then((savedCategories) => {
+      if (!savedCategories) {
+        return;
+      }
 
-        const parsedCategories: TimerCategory[] = JSON.parse(savedCategories);
+      const parsedCategories: TimerCategory[] = JSON.parse(savedCategories);
 
-        if (parsedCategories.length) {
-          setTimerCategories(parsedCategories);
-        } else {
-          throw new Error("No saved categories. This should not be possible.");
-        }
-      });
+      if (parsedCategories.length) {
+        setTimerCategories(parsedCategories);
+      } else {
+        throw new Error("No saved categories. This should not be possible.");
+      }
+    });
   }, []);
 
   // Save categories to localStorage whenever timerCategories state changes
   useEffect(() => {
-    Storage.getInstance().setItem("timerCategories", JSON.stringify(timerCategories));
+    AsyncStorage.setItem("timerCategories", JSON.stringify(timerCategories));
   }, [timerCategories]);
 
   // Add a new timer category
