@@ -37,7 +37,7 @@ export default function TimerExecutionView({ infusions }: TimerExecutionViewProp
   if (areAllInfusionsDone) {
     return (
       <ThemedView style={[styles.container, { borderColor, backgroundColor }]}>
-        <ThemedText>All infusions are done!</ThemedText>
+        <ThemedText>All infusions are done.</ThemedText>
 
         <ThemedButton
           onPress={() => {

@@ -1,20 +1,16 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Link, router, Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import { Link, router, Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import "react-native-reanimated";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Pressable } from 'react-native';
-import { ContextProviders } from '../context';
-import { defaultCategoryId } from '../context/timersContext';
-import { useThemeColor } from '../hooks/useThemeColor';
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Pressable } from "react-native";
+import { ContextProviders } from "../context";
+import { defaultCategoryId } from "../context/timersContext";
+import { useThemeColor } from "../hooks/useThemeColor";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -22,10 +18,10 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  const tintColor = useThemeColor('secondary');
+  const tintColor = useThemeColor("secondary");
 
   useEffect(() => {
     if (loaded) {
@@ -38,21 +34,17 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <ContextProviders>
         <Stack initialRouteName="timers">
           <Stack.Screen
             name="timers"
             options={{
-              title: '',
+              title: "",
               headerTintColor: tintColor,
               headerLeft: ({ tintColor }) => (
                 <Link href="/settings">
-                  <Ionicons
-                    name="settings-outline"
-                    color={tintColor}
-                    size={24}
-                  />
+                  <Ionicons name="settings-outline" color={tintColor} size={24} />
                 </Link>
               ),
               headerRight: ({ tintColor }) => (
@@ -65,15 +57,15 @@ export default function RootLayout() {
           <Stack.Screen
             name="settings"
             options={{
-              title: 'Settings',
+              title: "Settings",
               headerTintColor: tintColor,
             }}
           />
           <Stack.Screen
             name="create-timer/[categoryId]"
             options={{
-              presentation: 'fullScreenModal',
-              title: 'Create timer',
+              presentation: "fullScreenModal",
+              title: "Create timer",
               headerTintColor: tintColor,
               headerLeft: ({ tintColor }) => (
                 <Pressable onPress={() => router.back()}>
@@ -85,8 +77,8 @@ export default function RootLayout() {
           <Stack.Screen
             name="edit-timer/[timerId]"
             options={{
-              presentation: 'fullScreenModal',
-              title: 'Edit Timer',
+              presentation: "fullScreenModal",
+              title: "Edit Timer",
               headerTintColor: tintColor,
               headerLeft: ({ tintColor }) => (
                 <Pressable onPress={() => router.back()}>
@@ -98,7 +90,7 @@ export default function RootLayout() {
           <Stack.Screen
             name="timer/[timerId]"
             options={{
-              presentation: 'fullScreenModal',
+              presentation: "fullScreenModal",
               headerTintColor: tintColor,
               headerLeft: ({ tintColor }) => (
                 <Pressable onPress={() => router.back()}>

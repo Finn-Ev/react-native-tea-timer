@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSettings } from "../context/settingsContext";
 import { useThemeColor } from "../hooks/useThemeColor";
 import ThemedButton from "./theme/ThemedButton";
+import { ThemedText } from "./theme/ThemedText";
 
 interface TimerClockProps {
   infusions: number[];
@@ -54,10 +55,10 @@ export default function TimerClock({
 
   const handleTimerEnd = async () => {
     if (!settings.muteTimerSounds) {
-      console.log("Loading Sound");
-      //   const { sound: loadedSound } = await Audio.Sound.createAsync(require(settings.selectedTimerSound!.audioFilePath));
-      console.log("Playing Sound");
-      //   await loadedSound.playAsync();
+      const soundObject = settings.selectedTimerSound?.soundObject;
+      if (soundObject) {
+        await soundObject.replayAsync();
+      }
     }
 
     // automatically move to the next infusion if available
@@ -86,20 +87,19 @@ export default function TimerClock({
     setIsPaused(false);
   };
 
-  const formatTime = (seconds: number) => {
+  const getFormattedDigits = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     const timeString = `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
     return timeString.split("");
   };
 
-  const timeArray = formatTime(displayedDuration);
-
   return (
     <View style={styles.container}>
       <View style={styles.clockWrapper}>
-        {timeArray.map((char, index) => (
-          <Text
+        {getFormattedDigits(displayedDuration).map((char, index) => (
+          <ThemedText
+            type="subtitle"
             key={index}
             style={[
               styles.displayDigit,
@@ -110,7 +110,7 @@ export default function TimerClock({
             ]}
           >
             {char}
-          </Text>
+          </ThemedText>
         ))}
       </View>
 
