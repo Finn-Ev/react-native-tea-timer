@@ -13,7 +13,7 @@ export default function DefaultCategoryView() {
 
   const { defaultCategory, customTimerCategories } = useTimers();
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const borderColor = useThemeColor("accent");
 
@@ -41,13 +41,17 @@ export default function DefaultCategoryView() {
               },
             ]}
           >
-            {customTimerCategories.length > 0 && (
-              <Pressable style={styles.uncategorisedTimersTitleWrapper} onPress={() => setIsExpanded(!isExpanded)}>
-                <ThemedText style={styles.uncategorisedTimersTitle}>{defaultCategory.title}</ThemedText>
-                <Ionicons name={isExpanded ? "chevron-down" : "chevron-forward"} size={24} />
-              </Pressable>
+            {customTimerCategories.length > 0 ? (
+              <>
+                <Pressable style={styles.uncategorisedTimersTitleWrapper} onPress={() => setIsExpanded(!isExpanded)}>
+                  <ThemedText style={styles.uncategorisedTimersTitle}>{defaultCategory.title}</ThemedText>
+                  <Ionicons name={isExpanded ? "chevron-down" : "chevron-forward"} size={24} />
+                </Pressable>
+                {isExpanded && <TimerGrid timers={defaultCategory.timers} />}
+              </>
+            ) : (
+              <TimerGrid timers={defaultCategory.timers} />
             )}
-            {isExpanded && <TimerGrid timers={defaultCategory.timers} />}
           </View>
         )}
       </ThemedView>
